@@ -16,5 +16,5 @@ export async function getPosts(): Promise<BlogPost[]> {
 
 export async function savePosts(posts: BlogPost[]): Promise<void> {
   const { put } = await import('@vercel/blob');
-  await put('posts.json', JSON.stringify(posts), { access: 'public', addRandomSuffix: false });
+  await put('posts.json', JSON.stringify(posts), { access: 'public', addRandomSuffix: false, allowOverwrite: true });
 }
