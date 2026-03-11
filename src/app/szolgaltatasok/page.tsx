@@ -42,9 +42,11 @@ export default function ServicesPage() {
                     <p className="text-lg text-gray-700 mb-8 max-w-2xl mx-auto">
                         Ha bizonytalan vagy, hogy melyik elemzés lenne a leghasznosabb számodra jelenlegi élethelyzetedben, keress bátran, és segítek választani.
                     </p>
-                    <Button size="lg" className="text-lg bg-[#8B5CF6] hover:bg-[#7c3aed]">
-                        Segítséget kérek a választáshoz
-                    </Button>
+                    <Link href="/#contact">
+                        <Button size="lg" className="text-lg bg-[#8B5CF6] hover:bg-[#7c3aed]">
+                            Segítséget kérek a választáshoz
+                        </Button>
+                    </Link>
                 </motion.div>
 
             </section>
