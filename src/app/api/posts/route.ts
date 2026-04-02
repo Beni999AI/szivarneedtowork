@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
   const excerpt = content.replace(/\n/g, ' ').slice(0, 160);
 
-  const currentPosts = await getPosts();
+  const currentPosts = await getPosts(true);
   const newPost = { slug, title, date, dateISO, excerpt, content };
 
   try {

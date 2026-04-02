@@ -10,12 +10,17 @@ function getBlobBaseUrl(): string | null {
   return `https://${storeId}.public.blob.vercel-storage.com`;
 }
 
-export async function getPosts(): Promise<BlogPost[]> {
+// fresh=true bypasses cache (used by POST handler to get current posts before saving)
+// fresh=false uses 24h cache (used by the blog page — pairs with export const revalidate = 86400)
+export async function getPosts(fresh = false): Promise<BlogPost[]> {
   const baseUrl = getBlobBaseUrl();
   if (!baseUrl) return hardcodedPosts;
 
   try {
-    const res = await fetch(`${baseUrl}/posts.json`, { cache: 'no-store' });
+    const cacheOption = fresh
+      ? { cache: 'no-store' as const }
+      : { next: { revalidate: 86400 } };
+    const res = await fetch(`${baseUrl}/posts.json`, cacheOption);
     if (!res.ok) return hardcodedPosts; // 404 = no posts saved yet, or other error
     const posts: BlogPost[] = await res.json();
     return posts.sort((a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime());
