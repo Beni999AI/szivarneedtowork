@@ -1,3 +1,5 @@
+export const revalidate = 86400;
+
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getPosts } from "@/lib/posts";

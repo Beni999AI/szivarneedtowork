@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getPosts, savePosts } from '@/lib/posts';
 
 export async function GET() {
@@ -31,10 +32,17 @@ export async function POST(req: NextRequest) {
 
   const excerpt = content.replace(/\n/g, ' ').slice(0, 160);
 
-  // getPosts() seeds hardcoded posts on first run (when no blob exists yet)
   const currentPosts = await getPosts();
   const newPost = { slug, title, date, dateISO, excerpt, content };
-  await savePosts([newPost, ...currentPosts]);
+
+  try {
+    await savePosts([newPost, ...currentPosts]);
+  } catch (err) {
+    console.error('savePosts failed:', err);
+    return NextResponse.json({ error: 'Failed to save post. Blob storage error.' }, { status: 500 });
+  }
+
+  revalidatePath('/aktualis-irasok');
 
   return NextResponse.json({ success: true, post: newPost }, { status: 201 });
 }
