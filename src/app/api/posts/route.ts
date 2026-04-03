@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     await savePosts([newPost, ...currentPosts]);
   } catch (err) {
     console.error('savePosts failed:', err);
-    return NextResponse.json({ error: 'Failed to save post. Blob storage error.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to save post.' }, { status: 500 });
   }
 
   revalidatePath('/aktualis-irasok');
