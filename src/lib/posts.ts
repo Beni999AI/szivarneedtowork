@@ -1,19 +1,39 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { blogPosts as hardcodedPosts, BlogPost } from '@/data/blogs';
 
 const REPO_OWNER = 'Beni999AI';
 const REPO_NAME = 'szivarneedtowork';
 const POSTS_PATH = 'content/posts.json';
-const RAW_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${POSTS_PATH}`;
 const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${POSTS_PATH}`;
 
 export async function getPosts(fresh = false): Promise<BlogPost[]> {
+  // When fresh (POST handler needs latest from GitHub), use GitHub API
+  if (fresh) {
+    try {
+      const token = process.env.GITHUB_TOKEN;
+      const res = await fetch(API_URL, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Accept: 'application/vnd.github.v3+json',
+        },
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const content = Buffer.from(data.content, 'base64').toString('utf-8');
+        const posts: BlogPost[] = JSON.parse(content);
+        return posts.sort((a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime());
+      }
+    } catch { /* fall through */ }
+    return hardcodedPosts;
+  }
+
+  // For page renders, read from the deployed file (no network call, no CDN cache issues)
   try {
-    const cacheOption = fresh
-      ? { cache: 'no-store' as const }
-      : { next: { revalidate: 86400 } };
-    const res = await fetch(RAW_URL, cacheOption);
-    if (!res.ok) return hardcodedPosts;
-    const posts: BlogPost[] = await res.json();
+    const filePath = join(process.cwd(), 'content', 'posts.json');
+    const data = readFileSync(filePath, 'utf-8');
+    const posts: BlogPost[] = JSON.parse(data);
     return posts.sort((a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime());
   } catch {
     return hardcodedPosts;
