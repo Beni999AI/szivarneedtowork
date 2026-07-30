@@ -1,5 +1,13 @@
 [
   {
+    "slug": "teszt-cim",
+    "title": "teszt cim",
+    "date": "2026. július 30.",
+    "dateISO": "2026-07-30",
+    "excerpt": "teszt tartalom",
+    "content": "teszt tartalom"
+  },
+  {
     "slug": "boldog-uj-evet",
     "title": "BOLDOG ÚJ ÉVET",
     "date": "2026. április 03.",
