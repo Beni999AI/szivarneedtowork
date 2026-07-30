@@ -1,5 +1,13 @@
 [
   {
+    "slug": "teszt-bejegyzes",
+    "title": "Teszt bejegyzés",
+    "date": "2026. július 30.",
+    "dateISO": "2026-07-30",
+    "excerpt": "Teszt bejegyzés",
+    "content": "Teszt bejegyzés"
+  },
+  {
     "slug": "teszt-cim",
     "title": "teszt cim",
     "date": "2026. július 30.",
